@@ -1,0 +1,479 @@
+I've fixed the landing page to ensure all content displays correctly with proper styling, icons, and layout consistency.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>GrowFast Digital | Scale Your Business with AI-Powered Marketing</title>
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #0a0f2c;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* Custom gradient & glassmorphism */
+        .gradient-bg {
+            background: radial-gradient(circle at 0% 20%, rgba(10, 15, 44, 0.02) 0%, rgba(0, 150, 136, 0.03) 100%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: 1px solid rgba(0, 150, 136, 0.15);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 150, 136, 0.4);
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-primary {
+            background: linear-gradient(105deg, #0f2b3d 0%, #1c6e6b 100%);
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 3rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px -6px rgba(28, 110, 107, 0.3);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            background: linear-gradient(105deg, #1c3e4a 0%, #228b86 100%);
+            box-shadow: 0 12px 26px -8px rgba(28, 110, 107, 0.5);
+        }
+
+        .btn-outline-light {
+            background: transparent;
+            border: 1.5px solid rgba(10, 15, 44, 0.25);
+            padding: 0.9rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #0a0f2c;
+            cursor: pointer;
+        }
+
+        .btn-outline-light:hover {
+            border-color: #1c6e6b;
+            background: rgba(28, 110, 107, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #0a0f2c 0%, #1c6e6b 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .stat-badge {
+            background: rgba(28, 110, 107, 0.08);
+            border-radius: 3rem;
+            padding: 0.3rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1c6e6b;
+            display: inline-block;
+        }
+
+        .service-icon {
+            background: linear-gradient(145deg, #eef9f8, #ffffff);
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.5rem;
+            font-size: 2rem;
+            color: #1c6e6b;
+            box-shadow: 0 12px 18px -10px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-card {
+            background: #ffffff;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        footer a {
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border-radius: 1.5rem;
+            border: 1px solid #e2e8f0;
+            background: #fefefe;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1c6e6b;
+            box-shadow: 0 0 0 3px rgba(28,110,107,0.2);
+        }
+
+        .floating-shape {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(28,110,107,0.03) 0%, rgba(28,110,107,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1c6e6b;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+            .btn-primary, .btn-outline-light {
+                padding: 0.7rem 1.4rem;
+            }
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+
+    <!-- simple navbar (clean) -->
+    <nav class="container mx-auto px-6 py-5 flex justify-between items-center flex-wrap" style="max-width: 1280px; margin: 0 auto;">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-chart-line text-3xl" style="color: #1c6e6b;"></i>
+            <span class="font-extrabold text-2xl tracking-tight" style="color: #0a0f2c;">GrowFast<span style="color: #1c6e6b;">Digital</span></span>
+        </div>
+        <div class="hidden md:flex gap-8 items-center text-gray-700 font-medium">
+            <a href="#services" class="hover:text-teal-700 transition">Services</a>
+            <a href="#testimonials" class="hover:text-teal-700 transition">Testimonials</a>
+            <a href="#contact" class="hover:text-teal-700 transition">Contact</a>
+            <a href="#cta" class="bg-teal-50 px-5 py-2 rounded-full text-teal-800 font-semibold">Client Portal</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden" style="padding: 2rem 1.5rem 4rem 1.5rem;">
+        <div class="floating-shape" style="top: 10%; left: -5%;"></div>
+        <div class="floating-shape" style="bottom: 0; right: -5%; width: 400px; height: 400px;"></div>
+        <div class="container mx-auto" style="max-width: 1280px;">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="relative z-10">
+                    <span class="stat-badge mb-4 inline-block"><i class="fas fa-bolt mr-1"></i> AI-Powered Growth</span>
+                    <h1 class="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight mt-3" style="color: #0a0f2c;">
+                        Stop Wasting Ad Spend.<br> 
+                        <span style="background: linear-gradient(120deg, #1c6e6b, #2c9e96); background-clip: text; -webkit-background-clip: text; color: transparent;">Start Dominating.</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mt-6 leading-relaxed max-w-lg">
+                        High-converting funnels, Google & Meta ads, and revenue scaling — all under one roof. 
+                        Get a free ROI audit in under 24h.
+                    </p>
+                    <div class="flex flex-wrap gap-5 mt-8">
+                        <button class="btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'});">
+                            <i class="fas fa-chart-simple"></i> Get Free ROI Audit →
+                        </button>
+                        <button class="btn-outline-light" onclick="document.getElementById('testimonials').scrollIntoView({behavior: 'smooth'});">
+                            See Case Studies
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3 mt-8 text-sm text-gray-500">
+                        <i class="fas fa-check-circle text-teal-600"></i> No contracts · Cancel anytime
+                        <i class="fas fa-shield-alt ml-3 text-teal-600"></i> 48h reporting
+                    </div>
+                </div>
+                <div class="relative flex justify-center">
+                    <div class="glass-card p-2 shadow-2xl rounded-3xl bg-white/90 backdrop-blur-sm">
+                        <div style="background: linear-gradient(135deg, #eef9f8 0%, #d4f0ed 100%); border-radius: 1.5rem; padding: 2rem; text-align: center;">
+                            <i class="fas fa-chart-line" style="font-size: 4rem; color: #1c6e6b; opacity: 0.7;"></i>
+                            <p style="font-weight: 600; margin-top: 1rem; color: #1c6e6b;">Growth Dashboard Preview</p>
+                            <div style="background: white; border-radius: 1rem; padding: 1rem; margin-top: 1rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>ROAS</span><span style="color: #1c6e6b; font-weight: bold;">+312%</span>
+                                </div>
+                                <div style="height: 8px; background: #e2e8f0; border-radius: 4px;">
+                                    <div style="width: 78%; height: 8px; background: #1c6e6b; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6" style="background: #fafcfc;">
+        <div class="container mx-auto" style="max-width: 1280px;">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="stat-badge"><i class="fas fa-cogs mr-1"></i> Core Offerings</span>
+                <h2 class="section-title mt-4">Precision marketing that delivers <span style="color: #1c6e6b;">real ROI</span></h2>
+                <p class="text-gray-500 mt-4 text-lg">No vanity metrics. Only revenue, CAC, and ROAS that actually matter.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- service 1 -->
+                <div class="glass-card p-8 bg-white">
+                    <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">Performance Marketing</h3>
+                    <p class="text-gray-500 mb-4">Google, Meta, TikTok & LinkedIn ads managed by ex-Google strategists. Real-time bid adjustments.</p>
+                    <div class="flex items-center text-teal-700 font-medium"><i class="fas fa-bullseye mr-2"></i> ROI-First Bidding</div>
+                    <div class="mt-4 text-sm text-gray-400 border-t pt-4"><i class="fas fa-chart-simple"></i> 312% avg ROAS increase</div>
+                </div>
+                <!-- service 2 -->
+                <div class="glass-card p-8 bg-white">
+                    <div class="service-icon"><i class="fas fa-search"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">SEO & Content</h3>
+                    <p class="text-gray-500 mb-4">Dominate organic search with technical audits, pillar strategies, and topical authority.</p>
+                    <div class="flex items-center text-teal-700 font-medium"><i class="fas fa-trophy mr-2"></i> Rank Guarantee*</div>
+                    <div class="mt-4 text-sm text-gray-400 border-t pt-4">Top 3 ranking for 5 high-intent keywords</div>
+                </div>
+                <!-- service 3 -->
+                <div class="glass-card p-8 bg-white">
+                    <div class="service-icon"><i class="fas fa-paintbrush-fine"></i></div>
+                    <h3 class="text-2xl font-bold mb-3">Conversion Design</h3>
+                    <p class="text-gray-500 mb-4">Landing pages, email flows, CRO – we turn visitors into buyers with continuous A/B testing.</p>
+                    <div class="flex items-center text-teal-700 font-medium"><i class="fas fa-chart-line mr-2"></i> +20% Conv. Rate MoM</div>
+                    <div class="mt-4 text-sm text-gray-400 border-t pt-4">Heatmaps · User recordings · Funnel optimization</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section with big stats -->
+    <section id="testimonials" class="py-20 px-6">
+        <div class="container mx-auto" style="max-width: 1280px;">
+            <div class="text-center mb-12">
+                <span class="stat-badge"><i class="fas fa-star text-yellow-500"></i> 5.0 ★ TrustScore</span>
+                <h2 class="section-title mt-4 text-4xl md:text-5xl">What clients say about us</h2>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100">
+                    <div class="stat-number">$24M</div>
+                    <div class="text-gray-500">Client ad spend managed</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100">
+                    <div class="stat-number">312%</div>
+                    <div class="text-gray-500">Avg. ROAS increase</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100">
+                    <div class="stat-number">48hr</div>
+                    <div class="text-gray-500">Avg. reporting turnaround</div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="testimonial-card relative">
+                    <i class="fas fa-quote-left text-4xl text-teal-200 absolute opacity-40" style="top: 20px; left: 25px;"></i>
+                    <p class="text-lg italic text-gray-700 relative z-2 pl-4 pt-2">“We tried three other agencies before GrowFast. They were the only ones who actually understood our LTV:CAC ratio. They increased our ROAS from 2.1x to 4.8x in the first 90 days.”</p>
+                    <div class="flex items-center gap-4 mt-6">
+                        <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center"><i class="fas fa-user-tie text-teal-700 text-xl"></i></div>
+                        <div><strong>Sarah Jenkins</strong><br><span class="text-sm text-gray-500">CMO, ModaFit Apparel</span></div>
+                        <div class="ml-auto text-yellow-500"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-teal-50 to-white rounded-3xl p-8 shadow-xl">
+                    <div class="flex gap-2 items-center mb-4"><i class="fab fa-google text-2xl"></i><span class="font-bold">Google Reviews</span><span class="ml-auto text-teal-700">★★★★★ 5.0</span></div>
+                    <p class="text-gray-600 border-b pb-4 mb-4">"GrowFast built a complete funnel from scratch — within 3 weeks we broke our monthly record. Top tier creative strategy."</p>
+                    <div class="flex gap-2 items-center"><i class="fab fa-forbes text-2xl"></i><span>Featured in 'Top 10 Marketing Disruptors 2025'</span></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-5 mt-10">
+                <div class="bg-white p-5 rounded-2xl shadow-sm text-center">
+                    <i class="fas fa-chart-line text-teal-600 text-2xl"></i>
+                    <p class="font-bold text-xl mt-2">+189%</p>
+                    <p class="text-xs text-gray-500">Traffic growth</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm text-center">
+                    <i class="fas fa-dollar-sign text-teal-600 text-2xl"></i>
+                    <p class="font-bold text-xl mt-2">2.4x</p>
+                    <p class="text-xs text-gray-500">ROAS average</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl shadow-sm text-center">
+                    <i class="fas fa-clock text-teal-600 text-2xl"></i>
+                    <p class="font-bold text-xl mt-2">0.8s</p>
+                    <p class="text-xs text-gray-500">Faster load times</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section (scarcity + value) -->
+    <section id="cta" class="py-20 px-6 relative">
+        <div class="container mx-auto" style="max-width: 1100px;">
+            <div class="relative z-10 bg-gradient-to-r from-[#0a0f2c] to-[#1a5f5b] rounded-3xl p-12 md:p-16 text-white shadow-2xl">
+                <div class="absolute top-0 right-0 opacity-10 text-9xl"><i class="fas fa-chart-line"></i></div>
+                <div class="max-w-2xl">
+                    <span class="bg-white/20 rounded-full px-4 py-1 text-sm inline-block mb-4"><i class="fas fa-gem mr-1"></i> Limited availability</span>
+                    <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">Ready to scale without the guesswork?</h2>
+                    <p class="text-teal-100 text-lg mt-4">We only take on 5 new clients per month to ensure dedicated account management. Secure your spot now.</p>
+                    <div class="flex flex-wrap gap-5 mt-8">
+                        <button class="bg-white text-[#0a0f2c] font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition flex gap-2 items-center" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'});">
+                            Claim Your Free Strategy Session <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <div class="border border-white/30 rounded-full py-3 px-6 text-sm">✅ No contracts · Cancel anytime</div>
+                    </div>
+                    <p class="text-xs text-teal-200 mt-6">*Free audit includes full competitor analysis + actionable roadmap.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (modern dual column) -->
+    <section id="contact" class="py-20 px-6">
+        <div class="container mx-auto" style="max-width: 1280px;">
+            <div class="text-center mb-12">
+                <span class="stat-badge"><i class="fas fa-paper-plane"></i> Get in touch</span>
+                <h2 class="section-title text-4xl mt-3">Let's talk about your next growth leap</h2>
+                <p class="text-gray-500 mt-4 text-lg max-w-2xl mx-auto">Fill the form or reach out directly — we reply within 2 hours on business days.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-envelope text-teal-600 text-2xl w-8"></i>
+                            <span class="text-gray-700">hello@growfastdigital.com</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-phone-alt text-teal-600 text-2xl w-8"></i>
+                            <span class="text-gray-700">+1 (888) 472-9376</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+                            <i class="fas fa-map-marker-alt text-teal-600 text-2xl w-8"></i>
+                            <span class="text-gray-700">Austin, TX · Remote-first</span>
+                        </div>
+                        <div class="bg-teal-50 p-6 rounded-2xl mt-6">
+                            <i class="fas fa-clock text-teal-700"></i> <strong class="ml-2">Office Hours</strong>
+                            <p class="mt-2 text-gray-600">Mon–Fri: 9AM – 8PM EST<br>Sat: by appointment only</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100">
+                    <form id="demoForm" action="#" method="post">
+                        <div class="grid md:grid-cols-2 gap-5">
+                            <div><label class="block text-sm font-medium mb-1">Full name *</label><input type="text" placeholder="Alex Johnson" required></div>
+                            <div><label class="block text-sm font-medium mb-1">Business email *</label><input type="email" placeholder="hello@company.com" required></div>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium mb-1">Monthly ad spend</label>
+                            <select>
+                                <option>$0 – $5k</option>
+                                <option>$5k – $20k</option>
+                                <option>$20k+</option>
+                            </select>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium mb-1">How can we help?</label>
+                            <textarea rows="3" placeholder="Tell us about your goals..."></textarea>
+                        </div>
+                        <div class="mt-6">
+                            <button type="submit" class="btn-primary w-full justify-center" onclick="alert('📩 Thanks! A strategist will reach out within 2h. (demo mode)'); return false;">
+                                <i class="fas fa-rocket"></i> Send message →
+                            </button>
+                            <p class="text-xs text-center text-gray-400 mt-4">No spam. We'll reach out with custom insights.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0a0f2c] text-white pt-16 pb-8 px-6 mt-10">
+        <div class="container mx-auto" style="max-width: 1280px;">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-2"><i class="fas fa-chart-line text-2xl text-teal-400"></i><span class="font-bold text-xl">GrowFast<span class="text-teal-400">Digital</span></span></div>
+                    <p class="text-gray-300 text-sm mt-3">Data-driven digital marketing that scales revenue, not just clicks.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">Services</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>Performance Marketing</li><li>SEO & Content</li><li>Conversion Design</li><li>CRO Audits</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">Resources</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li>Case Studies</li><li>ROI Calculator</li><li>Marketing Blog</li><li>Free Audit</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-lg mb-3">Connect</h4>
+                    <div class="flex gap-4 text-xl"><i class="fab fa-linkedin-in hover:text-teal-400 cursor-pointer"></i><i class="fab fa-twitter hover:text-teal-400 cursor-pointer"></i><i class="fab fa-instagram hover:text-teal-400 cursor-pointer"></i></div>
+                    <p class="text-xs text-gray-400 mt-4">© 2026 GrowFast Digital. All rights reserved.</p>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-10 pt-6 text-center text-xs text-gray-400">
+                *Rank guarantee applies to specific keyword packages. Performance may vary. See terms.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // smooth interactions
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Add click handlers for buttons
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            if(!btn.hasAttribute('onclick')) {
+                btn.addEventListener('click', function(e) {
+                    if(this.closest('#cta') || (this.innerText.includes('Strategy') || this.innerText.includes('Audit'))) {
+                        document.getElementById('contact').scrollIntoView({behavior: 'smooth'});
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+```
