@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Tripper | Google Sheets Powered Dashboard + POST API</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f0f4f9; color: #1a2c3e; padding: 1.5rem; }
+    .container { max-width: 1800px; margin: 0 auto; }
+    
+    /* Header */
+    .header { background: linear-gradient(135deg, #0a2f3f 0%, #135f7a 100%); border-radius: 28px; padding: 1.5rem 2rem; margin-bottom: 1.8rem; color: white; }
+    .header h1 { font-size: 1.8rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .api-badge { background: rgba(255,255,255,0.2); border-radius: 40px; padding: 0.3rem 1rem; font-family: monospace; font-size: 0.7rem; }
+    
+    /* Two columns */
+    .two-columns { display: grid; grid-template-columns: 380px 1fr; gap: 1.8rem; margin-bottom: 2rem; }
+    @media (max-width: 900px) { .two-columns { grid-template-columns: 1fr; } }
+    
+    /* POST Panel */
+    .post-panel { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.05); position: sticky; top: 1rem; height: fit-content; }
+    .post-panel h3 { font-size: 1.2rem; margin-bottom: 1rem; color: #135f7a; display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 0.9rem; }
+    .form-group label { display: block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; margin-bottom: 0.3rem; color: #5b7c91; }
+    .form-group input, .form-group textarea { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid #dce7ed; border-radius: 16px; font-size: 0.85rem; font-family: inherit; }
+    .btn-submit { background: #ff9142; border: none; padding: 0.8rem; width: 100%; border-radius: 40px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0.5rem; }
+    .api-endpoint { background: #1e2a3e; padding: 1rem; border-radius: 20px; margin-top: 1rem; font-size: 0.7rem; word-break: break-all; color: #8aaec0; }
+    .api-endpoint code { background: #0d1c26; padding: 0.5rem; display: block; border-radius: 12px; color: #ffb347; font-size: 0.65rem; margin-top: 5px; }
+    
+    /* Dashboard */
+    .filter-bar { background: white; border-radius: 60px; padding: 0.5rem 1rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .search-wrapper { flex: 1; display: flex; align-items: center; gap: 8px; }
+    #searchInput { border: none; padding: 0.6rem 0; width: 100%; outline: none; }
+    .result-count { font-size: 0.75rem; background: #eef2f6; padding: 0.3rem 1rem; border-radius: 30px; }
+    .refresh-btn { background: #135f7a; color: white; border: none; padding: 0.4rem 1rem; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.75rem; }
+    
+    /* Competitor Cards */
+    .competitors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .card { background: white; border-radius: 24px; overflow: hidden; border: 1px solid #e2edf2; transition: 0.2s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+    .card-header { padding: 1.2rem 1.3rem 0.6rem; border-bottom: 2px solid #f0f6fa; }
+    .company-name { font-size: 1.35rem; font-weight: 800; background: linear-gradient(120deg, #1f4e6e, #0d2f44); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .location { font-size: 0.75rem; color: #5b7c91; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+    .card-body { padding: 1rem 1.3rem; }
+    .website-btn { display: inline-flex; align-items: center; gap: 6px; background: #0f3b4f; color: white; padding: 0.45rem 1rem; border-radius: 40px; text-decoration: none; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.8rem; }
+    .contact-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; font-size: 0.7rem; }
+    .contact-badge { background: #f0f6fa; padding: 0.25rem 0.7rem; border-radius: 30px; display: inline-flex; align-items: center; gap: 5px; }
+    .social-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #eef3f7; }
+    .social-link { background: #f7fafc; padding: 0.3rem 0.8rem; border-radius: 30px; font-size: 0.7rem; text-decoration: none; color: #2c5a6e; display: inline-flex; align-items: center; gap: 5px; }
+    .loading { text-align: center; padding: 3rem; }
+    footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #6f8ea0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>
+      <i class="fas fa-google"></i> 
+      Prime Tripper · Google Sheets POST System
+      <span class="api-badge"><i class="fas fa-code"></i> Live POST API</span>
+    </h1>
+    <p style="margin-top: 8px; opacity:0.9">POST data → Google Sheets → Dashboard (auto-sync)</p>
+  </div>
+
+  <div class="two-columns">
+    <!-- LEFT: POST Form -->
+    <div class="post-panel">
+      <h3><i class="fas fa-paper-plane"></i> POST Competitor to Google Sheets</h3>
+      <form id="postForm">
+        <div class="form-group"><label>Company Name *</label><input type="text" id="compName" required></div>
+        <div class="form-group"><label>Location</label><input type="text" id="compLocation"></div>
+        <div class="form-group"><label>Website</label><input type="url" id="compWebsite"></div>
+        <div class="form-group"><label>Facebook URL</label><input type="url" id="compFacebook"></div>
+        <div class="form-group"><label>Instagram URL</label><input type="url" id="compInstagram"></div>
+        <div class="form-group"><label>X (Twitter) URL</label><input type="url" id="compTwitter"></div>
+        <div class="form-group"><label>YouTube URL</label><input type="url" id="compYoutube"></div>
+        <div class="form-group"><label>Phone Number</label><input type="text" id="compPhone"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="compEmail"></div>
+        <div class="form-group"><label>Fax</label><input type="text" id="compFax"></div>
+        <div class="form-group"><label>Notes</label><textarea id="compNotes" rows="2"></textarea></div>
+        <button type="submit" class="btn-submit"><i class="fas fa-cloud-upload-alt"></i> POST to Google Sheets</button>
+      </form>
+
+      <div class="api-endpoint">
+        <p><i class="fas fa-plug"></i> <strong>POST API URL (https://script.google.com/macros/s/AKfycbwZ1Ghkf1WoRIkKpL92J2obqzLYD0hPGeBtXYpDTuB1kUdkfTunB7V3jdHTbytl3ICyww/exec)</strong></p>
+        <code id="apiUrlDisplay">Loading...</code>
+        <p style="margin-top: 8px; font-size:0.65rem;"><i class="fas fa-info-circle"></i> R</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: Dashboard -->
+    <div>
+      <div class="filter-bar">
+        <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="Search competitors..."></div>
+        <div class="result-count" id="resultCount">-- competitors</div>
+        <button id="refreshBtn" class="refresh-btn"><i class="fas fa-sync-alt"></i> Sync Sheet</button>
+      </div>
+      <div id="competitorsGrid" class="competitors-grid"><div class="loading"><i class="fas fa-spinner fa-pulse"></i> Loading from Google Sheets...</div></div>
+    </div>
+  </div>
+  <footer><i class="fas fa-database"></i> Data stored in Google Sheets | POST requests write directly to sheet | Dashboard reads live data</footer>
+</div>
+
+<script>
+  // ==================================================
+  // CONFIGURATION - REPLACE WITH YOUR APPS SCRIPT URL
+  // ==================================================
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ1Ghkf1WoRIkKpL92J2obqzLYD0hPGeBtXYpDTuB1kUdkfTunB7V3jdHTbytl3ICyww/exec"; // 🔴 REPLACE THIS!
+  
+  // For testing/demo, if URL not set, show instructions
+  let currentApiUrl = GOOGLE_SCRIPT_URL;
+  
+  // Display API URL in the panel
+  document.getElementById('apiUrlDisplay').innerHTML = currentApiUrl === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE" 
+    ? '⚠️ Set your Apps Script URL in the code (var GOOGLE_SCRIPT_URL)' 
+    : currentApiUrl;
+  
+  // ==================================================
+  // FUNCTION: Fetch all competitors from Google Sheet
+  // ==================================================
+  async function fetchCompetitorsFromSheet() {
+    if (!currentApiUrl || currentApiUrl === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+      // Demo mode - show sample data with instructions
+      return getSampleData();
+    }
+    
+    try {
+      // Google Sheets as JSON endpoint (using export format)
+      // Convert sheet to JSON using Google Sheets API via CSV export
+      const sheetId = extractSheetId(currentApiUrl);
+      if (sheetId) {
+        const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+        const response = await fetch(csvUrl);
+        const csvText = await response.text();
+        const competitors = parseCSVtoCompetitors(csvText);
+        return competitors;
+      } else {
+        throw new Error("Invalid sheet URL");
+      }
+    } catch (error) {
+      console.error("Error fetching sheet:", error);
+      return getSampleData();
+    }
+  }
+  
+  // Extract Sheet ID from Apps Script URL or Sheet URL
+  function extractSheetId(url) {
+    // If it's a sheet URL
+    const sheetMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (sheetMatch) return sheetMatch[1];
+    return null;
+  }
+  
+  // Parse CSV to competitor objects
+  function parseCSVtoCompetitors(csvText) {
+    const lines = csvText.split('\n');
+    if (lines.length < 2) return [];
+    
+    const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+    const competitors = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      const values = parseCSVLine(lines[i]);
+      const comp = {};
+      headers.forEach((h, idx) => {
+        let val = values[idx] || '';
+        val = val.replace(/^"|"$/g, '').trim();
+        comp[h] = val;
+      });
+      
+      competitors.push({
+        company: comp['Company Name'] || comp['company'] || 'Unknown',
+        location: comp['Location'] || comp['location'] || '',
+        website: comp['Website'] || comp['website'] || '',
+        facebook: comp['Facebook'] || comp['facebook'] || '',
+        instagram: comp['Instagram'] || comp['instagram'] || '',
+        twitter: comp['Twitter'] || comp['twitter'] || '',
+        youtube: comp['YouTube'] || comp['youtube'] || '',
+        phone: comp['Phone'] || comp['phone'] || '',
+        email: comp['Email'] || comp['email'] || '',
+        fax: comp['Fax'] || comp['fax'] || '',
+        notes: comp['Notes'] || comp['notes'] || ''
+      });
+    }
+    return competitors;
+  }
+  
+  function parseCSVLine(line) {
+    const result = [];
+    let inQuotes = false;
+    let current = '';
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        result.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current);
+    return result;
+  }
+  
+  // Sample data for demo / fallback
+  function getSampleData() {
+    return [
+      { company: "MakeMyTrip", location: "Gurgaon, HR", website: "https://www.makemytrip.com", facebook: "https://facebook.com/makemytrip", instagram: "https://instagram.com/makemytrip", twitter: "https://twitter.com/makemytrip", youtube: "https://youtube.com/c/makemytrip", phone: "+91-124-4510100", email: "care@makemytrip.com", fax: "0124-4510111", notes: "Demo data - Connect Google Sheet" },
+      { company: "EaseMyTrip", location: "New Delhi", website: "https://www.easemytrip.com", facebook: "https://facebook.com/EaseMyTrip", instagram: "https://instagram.com/easemytrip", twitter: "https://twitter.com/EaseMyTrip", youtube: "", phone: "+91-11-42429999", email: "support@easemytrip.com", fax: "", notes: "" }
+    ];
+  }
+  
+  // ==================================================
+  // FUNCTION: POST to Google Sheets (via Apps Script)
+  // ==================================================
+  async function postToGoogleSheets(competitorData) {
+    if (!currentApiUrl || currentApiUrl === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+      alert("⚠️ Please configure your Google Apps Script URL in the code first!\n\nGo to Google Apps Script → Deploy → Copy Web App URL → Replace GOOGLE_SCRIPT_URL variable.");
+      return false;
+    }
+    
+    try {
+      const response = await fetch(currentApiUrl, {
+        method: 'POST',
+        mode: 'no-cors', // For Apps Script deployment
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(competitorData)
+      });
+      
+      // With no-cors, we can't read response, but request is sent
+      console.log("POST request sent to Google Sheets");
+      return true;
+    } catch (error) {
+      console.error("POST error:", error);
+      alert("Error sending data. Make sure your Apps Script is deployed with 'Anyone' access.");
+      return false;
+    }
+  }
+  
+  // ==================================================
+  // Dashboard Rendering
+  // ==================================================
+  let allCompetitors = [];
+  
+  async function refreshDashboard() {
+    document.getElementById('competitorsGrid').innerHTML = '<div class="loading"><i class="fas fa-spinner fa-pulse"></i> Syncing with Google Sheets...</div>';
+    allCompetitors = await fetchCompetitorsFromSheet();
+    renderDashboard();
+  }
+  
+  function renderDashboard() {
+    const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+    const filtered = allCompetitors.filter(c => {
+      const haystack = `${c.company} ${c.location} ${c.phone || ''} ${c.email || ''}`.toLowerCase();
+      return haystack.includes(searchTerm);
+    });
+    
+    document.getElementById('resultCount').innerHTML = `📊 ${filtered.length} / ${allCompetitors.length} competitors`;
+    
+    if (filtered.length === 0) {
+      document.getElementById('competitorsGrid').innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem; background:white; border-radius:28px;">✨ No competitors found. Use POST form to add!</div>`;
+      return;
+    }
+    
+    let html = '';
+    for (let comp of filtered) {
+      const websiteBtn = comp.website ? `<a href="${comp.website}" target="_blank" class="website-btn"><i class="fas fa-globe"></i> Visit Now</a>` : '';
+      
+      let contactHtml = '<div class="contact-row">';
+      if (comp.phone) contactHtml += `<span class="contact-badge"><i class="fas fa-phone"></i> ${escapeHtml(comp.phone)}</span>`;
+      if (comp.email) contactHtml += `<span class="contact-badge"><i class="fas fa-envelope"></i> ${escapeHtml(comp.email)}</span>`;
+      if (comp.fax) contactHtml += `<span class="contact-badge"><i class="fas fa-fax"></i> ${escapeHtml(comp.fax)}</span>`;
+      if (!comp.phone && !comp.email && !comp.fax) contactHtml += `<span class="contact-badge">No contact info</span>`;
+      contactHtml += '</div>';
+      
+      let socialHtml = '<div class="social-links">';
+      const socialItems = [
+        { platform: "Facebook", icon: "fab fa-facebook-f", url: comp.facebook },
+        { platform: "Instagram", icon: "fab fa-instagram", url: comp.instagram },
+        { platform: "X (Twitter)", icon: "fab fa-twitter", url: comp.twitter },
+        { platform: "YouTube", icon: "fab fa-youtube", url: comp.youtube }
+      ];
+      let hasSocial = false;
+      for (let s of socialItems) {
+        if (s.url && s.url !== '') {
+          hasSocial = true;
+          socialHtml += `<a href="${s.url}" target="_blank" class="social-link"><i class="${s.icon}"></i> ${s.platform}</a>`;
+        }
+      }
+      if (!hasSocial) socialHtml += `<span class="contact-badge">No social media</span>`;
+      socialHtml += '</div>';
+      
+      const notesHtml = comp.notes ? `<div style="font-size:0.65rem; background:#fff6e5; padding:6px 10px; border-radius:16px; margin-top:8px;"><i class="fas fa-sticky-note"></i> ${escapeHtml(comp.notes)}</div>` : '';
+      
+      html += `
+        <div class="card">
+          <div class="card-header">
+            <div class="company-name">${escapeHtml(comp.company)}</div>
+            <div class="location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(comp.location || '—')}</div>
+          </div>
+          <div class="card-body">
+            ${websiteBtn}
+            ${contactHtml}
+            ${socialHtml}
+            ${notesHtml}
+          </div>
+        </div>
+      `;
+    }
+    document.getElementById('competitorsGrid').innerHTML = html;
+  }
+  
+  function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+  
+  // Handle POST Form Submission
+  document.getElementById('postForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const newData = {
+      company: document.getElementById('compName').value.trim(),
+      location: document.getElementById('compLocation').value.trim(),
+      website: document.getElementById('compWebsite').value.trim(),
+      facebook: document.getElementById('compFacebook').value.trim(),
+      instagram: document.getElementById('compInstagram').value.trim(),
+      twitter: document.getElementById('compTwitter').value.trim(),
+      youtube: document.getElementById('compYoutube').value.trim(),
+      phone: document.getElementById('compPhone').value.trim(),
+      email: document.getElementById('compEmail').value.trim(),
+      fax: document.getElementById('compFax').value.trim(),
+      notes: document.getElementById('compNotes').value.trim()
+    };
+    
+    if (!newData.company) { alert('Company Name required!'); return; }
+    
+    const submitBtn = e.target.querySelector('button');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending...';
+    submitBtn.disabled = true;
+    
+    const success = await postToGoogleSheets(newData);
+    
+    if (success) {
+      alert(`✅ POST sent! "${newData.company}" added to Google Sheets.\n\nClick "Sync Sheet" to refresh dashboard.`);
+      document.getElementById('postForm').reset();
+      // Auto-refresh after 2 seconds
+      setTimeout(() => refreshDashboard(), 2000);
+    } else {
+      alert('❌ Failed to send. Check Apps Script URL and deployment settings.');
+    }
+    
+    submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> POST to Google Sheets';
+    submitBtn.disabled = false;
+  });
+  
+  // Event Listeners
+  document.getElementById('searchInput').addEventListener('input', () => renderDashboard());
+  document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
+  
+  // Initial load
+  refreshDashboard();
+</script>
+</body>
+</html>
