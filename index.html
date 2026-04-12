@@ -1,0 +1,577 @@
+Here is an HTML document that creates a competitor tracking dashboard for Prime Tripper, displaying all competitor details, social media links, and website buttons in a clean, filterable card layout.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Prime Tripper | Competitor Intelligence Dashboard</title>
+  <!-- Google Fonts & Font Awesome 6 (free CDN) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f4f7fc;
+      color: #1e2a3e;
+      padding: 2rem 1.5rem;
+    }
+
+    /* main container */
+    .dashboard-container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    /* header & brand */
+    .brand-header {
+      background: linear-gradient(135deg, #0b2b3b 0%, #134b5f 100%);
+      border-radius: 32px;
+      padding: 1.8rem 2rem;
+      margin-bottom: 2rem;
+      color: white;
+      box-shadow: 0 12px 24px -10px rgba(0,0,0,0.1);
+    }
+
+    .brand-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand-header h1 i {
+      background: #ffb347;
+      background: linear-gradient(135deg, #ffb347, #ff8c2e);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 2.2rem;
+    }
+
+    .brand-header .sub {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-top: 8px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stats-badge {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(4px);
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* filter bar */
+    .filter-bar {
+      background: white;
+      border-radius: 60px;
+      padding: 0.5rem 1rem 0.5rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e2edf2;
+    }
+
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 2;
+      min-width: 220px;
+    }
+
+    .search-wrapper i {
+      color: #5f8b9b;
+      font-size: 1.1rem;
+    }
+
+    #searchInput {
+      border: none;
+      padding: 0.7rem 0;
+      font-size: 0.95rem;
+      background: transparent;
+      width: 100%;
+      outline: none;
+      font-weight: 500;
+    }
+
+    .clear-filter {
+      background: #eef3f7;
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      color: #1e4660;
+    }
+
+    .clear-filter:hover {
+      background: #dfe9ef;
+    }
+
+    .result-count {
+      font-size: 0.85rem;
+      background: #e9f0f5;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-weight: 500;
+    }
+
+    /* competitor grid */
+    .competitors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.8rem;
+    }
+
+    /* card design */
+    .competitor-card {
+      background: #ffffff;
+      border-radius: 28px;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9f0f4;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .competitor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 36px -12px rgba(0, 0, 0, 0.15);
+      border-color: #cbdde6;
+    }
+
+    .card-header {
+      padding: 1.4rem 1.5rem 0.6rem 1.5rem;
+      border-bottom: 2px solid #f0f6fa;
+    }
+
+    .company-name {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      background: linear-gradient(120deg, #1f4e6e, #0d2f44);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #4e6b7e;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+
+    .location i {
+      font-size: 0.8rem;
+      color: #ff9142;
+    }
+
+    .card-body {
+      padding: 1.2rem 1.5rem;
+      flex: 1;
+    }
+
+    .website-action {
+      margin-bottom: 1.5rem;
+    }
+
+    .visit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0b2b3b;
+      color: white;
+      padding: 0.65rem 1.2rem;
+      border-radius: 60px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .visit-btn i {
+      font-size: 0.9rem;
+    }
+
+    .visit-btn:hover {
+      background: #1f5a74;
+      transform: scale(0.98);
+    }
+
+    /* social section - all links in one place */
+    .social-links-section {
+      background: #fafefe;
+      border-radius: 20px;
+      padding: 1rem 1rem;
+      margin-top: 0.5rem;
+      border: 1px solid #eef3f7;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: #4f7e9b;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .social-icons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: 0.15s;
+      border: 1px solid #e0edf3;
+      color: #1f3e54;
+    }
+
+    .social-link i {
+      font-size: 1.2rem;
+      width: 1.2rem;
+    }
+
+    .social-link:hover {
+      background: #f5faff;
+      border-color: #bdd5e2;
+      transform: translateY(-2px);
+    }
+
+    .fb-link i { color: #1877f2; }
+    .ig-link i { color: #e4405f; }
+
+    .no-social {
+      background: #f5f7f9;
+      padding: 0.6rem 1rem;
+      border-radius: 30px;
+      color: #6a7f8f;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .social-note {
+      font-size: 0.7rem;
+      margin-top: 8px;
+      color: #b57339;
+      background: #fff1e0;
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+    }
+
+    hr {
+      margin: 12px 0;
+      border-color: #eaf1f5;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #6e8ea0;
+      border-top: 1px solid #dde6ec;
+      padding-top: 1.8rem;
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 1rem;
+      }
+      .brand-header h1 {
+        font-size: 1.6rem;
+      }
+      .filter-bar {
+        border-radius: 28px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .competitors-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-container">
+  <!-- header with Prime Tripper identity -->
+  <div class="brand-header">
+    <h1>
+      <i class="fas fa-globe-asia"></i> 
+      Prime Tripper · Competitor Intelligence Hub
+    </h1>
+    <div class="sub">
+      <span><i class="fas fa-chart-line"></i> Real-time social tracking · Watch every move</span>
+      <span class="stats-badge"><i class="fas fa-building"></i> 15 active competitors</span>
+    </div>
+    <p style="font-size: 0.85rem; margin-top: 12px; opacity:0.9">
+      <i class="fas fa-eye"></i> One dashboard — all competitor links, locations, websites & social presence at a single place.
+    </p>
+  </div>
+
+  <!-- filter & search -->
+  <div class="filter-bar">
+    <div class="search-wrapper">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search by company name, location, or social handle...">
+    </div>
+    <button class="clear-filter" id="clearFilterBtn"><i class="fas fa-times-circle"></i> Clear</button>
+    <div class="result-count" id="resultCount">Showing all competitors</div>
+  </div>
+
+  <!-- dynamic competitor grid -->
+  <div id="competitorsGrid" class="competitors-grid">
+    <!-- JS will inject cards here -->
+    <div class="loading-placeholder" style="text-align:center; padding: 3rem;">Loading competitor intelligence...</div>
+  </div>
+  <footer>
+    <i class="fas fa-shield-alt"></i> Prime Tripper — Tours & Travels | Competitor monitoring dashboard<br>
+    All social links & websites open in new tab. Stay ahead, track strategies instantly.
+  </footer>
+</div>
+
+<script>
+  // --------------------------------------------------------------
+  // Competitor dataset (exactly from brief, enriched with full links)
+  // "find his all social media links" -> we provide Facebook & Instagram
+  // (and notes for missing ones, keeping all links in one section)
+  // --------------------------------------------------------------
+  const competitorsData = [
+    { name: "MakeMyTrip", location: "Gurgaon, HR", website: "https://www.makemytrip.com/", facebook: "https://www.facebook.com/makemytrip", instagram: "https://www.instagram.com/makemytrip", extraNote: null },
+    { name: "EaseMyTrip", location: "New Delhi", website: "https://www.easemytrip.com/", facebook: "https://www.facebook.com/EaseMyTrip", instagram: "https://www.instagram.com/easemytrip", extraNote: null },
+    { name: "Yatra", location: "Gurgaon, HR", website: "https://www.yatra.com/", facebook: "https://www.facebook.com/Yatra", instagram: "https://www.instagram.com/yatradotcom", extraNote: null },
+    { name: "Thomas Cook", location: "Noida/Delhi", website: "https://www.thomascook.in/", facebook: "https://www.facebook.com/ThomasCookIndiaLimited", instagram: "https://www.instagram.com/thomascookofficial", extraNote: null },
+    { name: "SOTC Travel", location: "Gurgaon, HR", website: "https://www.sotc.in/", facebook: "https://www.facebook.com/SOTCHolidays", instagram: "https://www.instagram.com/sotc_holidays", extraNote: null },
+    { name: "Ashok Travels", location: "New Delhi", website: "https://itdc.co.in/", facebook: "https://www.facebook.com/ITDCltd", instagram: "https://www.instagram.com/itdc_theashokgroup", extraNote: null },
+    { name: "My Flight Trip", location: "Noida, Sec 62", website: "https://myflighttrip.com/", facebook: "https://www.facebook.com/MyFlightTrips", instagram: "https://www.instagram.com/myflighttrip", extraNote: null },
+    { name: "Wanderon", location: "Gurgaon, HR", website: "https://wanderon.in/", facebook: "https://www.facebook.com/wander.on", instagram: "https://www.instagram.com/wander.on", extraNote: null },
+    { name: "Karvaann Exp.", location: "Noida, Sec 2", website: "https://karvaannexperiences.com/", facebook: "https://www.facebook.com/karvaanexperiences", instagram: "https://www.instagram.com/karvaannexperiences", extraNote: null },
+    { name: "Holanza Trails", location: "Faridabad, HR", website: "https://holanzatrails.com/", facebook: "https://www.facebook.com/share/1FxZkQ5KnB", instagram: "https://www.instagram.com/holanzatrails", extraNote: "Facebook link is a share page, still accessible" },
+    { name: "Sparkjet Tours", location: "Noida, Sec 63", website: "https://www.sparkjet.in/", facebook: null, instagram: null, extraNote: "Not Available on Social Media. Only a very normal Facebook page found (unofficial)." },
+    { name: "Travel On Call", location: "Gurgaon, Sec 14", website: "https://traveloncall.in/", facebook: "https://www.facebook.com/traveloncall.in", instagram: "https://instagram.com/wetraveloncall", extraNote: null },
+    { name: "Ghumingo", location: "Noida/East Del", website: "https://ghumingoholidays.com/", facebook: "https://www.facebook.com/Ghumingoholidays", instagram: "https://www.instagram.com/ghumingoholidays", extraNote: null },
+    { name: "Sushant Travels", location: "New Delhi", website: "https://sushanttravels.com/", facebook: "https://www.facebook.com/sushanttravels.Pvt.Ltd", instagram: "https://www.instagram.com/sushanttravels", extraNote: null },
+    { name: "Travel & Holidays", location: "Gurgaon, HR", website: "https://traveliholidays.com/", facebook: "https://www.facebook.com/traveliholidays", instagram: "https://www.instagram.com/travel_i_holidays", extraNote: null }
+  ];
+
+  // Helper: ensure Instagram URL is fully qualified
+  function normalizeSocialUrl(url, platform) {
+    if (!url) return null;
+    if (platform === 'instagram' && !url.includes('instagram.com')) {
+      // if handle like "instagram.com/wetraveloncall" was already full, but protect
+      if (url.startsWith('instagram.com')) return 'https://' + url;
+      if (url.startsWith('@')) return `https://instagram.com/${url.slice(1)}`;
+      if (!url.startsWith('http')) return `https://instagram.com/${url}`;
+    }
+    if (platform === 'facebook' && !url.includes('facebook.com') && !url.startsWith('http')) {
+      return `https://facebook.com/${url}`;
+    }
+    return url;
+  }
+
+  // Normalize all competitor social links
+  const fullCompetitors = competitorsData.map(comp => ({
+    ...comp,
+    facebook: comp.facebook ? normalizeSocialUrl(comp.facebook, 'facebook') : null,
+    instagram: comp.instagram ? normalizeSocialUrl(comp.instagram, 'instagram') : null,
+  }));
+
+  // DOM elements
+  const gridContainer = document.getElementById('competitorsGrid');
+  const searchInput = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearFilterBtn');
+  const resultCountSpan = document.getElementById('resultCount');
+
+  // render function with filtering
+  function renderDashboard(filterText = '') {
+    const lowerFilter = filterText.trim().toLowerCase();
+    let filtered = [...fullCompetitors];
+    
+    if (lowerFilter !== '') {
+      filtered = fullCompetitors.filter(comp => {
+        // search across company name, location, website, facebook/instagram handle (text)
+        const searchable = `${comp.name} ${comp.location} ${comp.website} ${comp.facebook || ''} ${comp.instagram || ''} ${comp.extraNote || ''}`.toLowerCase();
+        return searchable.includes(lowerFilter);
+      });
+    }
+
+    // update result count
+    resultCountSpan.innerHTML = lowerFilter ? `🎯 ${filtered.length} / ${fullCompetitors.length} results` : `📊 ${fullCompetitors.length} competitors · ready to track`;
+
+    if (filtered.length === 0) {
+      gridContainer.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem; background:#fff; border-radius: 48px;">
+                                    <i class="fas fa-binoculars" style="font-size:3rem; color:#bbb;"></i>
+                                    <p style="margin-top:1rem; font-weight:500;">No competitor matches "${escapeHtml(filterText)}"</p>
+                                    <button class="clear-filter" style="margin-top:1rem;" id="inlineClearBtn">Clear search</button>
+                                  </div>`;
+      const inlineClear = document.getElementById('inlineClearBtn');
+      if (inlineClear) inlineClear.addEventListener('click', () => { searchInput.value = ''; renderDashboard(''); });
+      return;
+    }
+
+    // build cards HTML
+    let cardsHtml = '';
+    for (let comp of filtered) {
+      // Build social section (all links at one place)
+      let socialHtml = `<div class="social-links-section">
+                          <div class="section-label"><i class="fas fa-share-alt"></i> ALL SOCIAL LINKS · INSTANT ACCESS</div>
+                          <div class="social-icons">`;
+      
+      // Facebook link if exists
+      if (comp.facebook) {
+        socialHtml += `<a href="${comp.facebook}" target="_blank" rel="noopener noreferrer" class="social-link fb-link">
+                        <i class="fab fa-facebook-f"></i> Facebook
+                       </a>`;
+      } else if (comp.name === "Sparkjet Tours") {
+        // special handling: we show message but also keep not showing broken link
+        socialHtml += `<div class="no-social"><i class="fab fa-facebook-f"></i> Facebook: Not available (unofficial page only)</div>`;
+      } else {
+        socialHtml += `<div class="no-social"><i class="fab fa-facebook-f"></i> Facebook: Not provided</div>`;
+      }
+      
+      // Instagram link if exists
+      if (comp.instagram) {
+        socialHtml += `<a href="${comp.instagram}" target="_blank" rel="noopener noreferrer" class="social-link ig-link">
+                        <i class="fab fa-instagram"></i> Instagram
+                       </a>`;
+      } else if (comp.name === "Sparkjet Tours") {
+        // additional missing instagram
+        socialHtml += `<div class="no-social"><i class="fab fa-instagram"></i> Instagram: No official presence</div>`;
+      } else {
+        socialHtml += `<div class="no-social"><i class="fab fa-instagram"></i> Instagram: Not available</div>`;
+      }
+      
+      // Extra note if any (like "holanza share link note" or sparkjet detailed note)
+      if (comp.extraNote) {
+        socialHtml += `<div class="social-note"><i class="fas fa-info-circle"></i> ${escapeHtml(comp.extraNote)}</div>`;
+      }
+      // Additional "all social media links" – we also could add if they had other platforms, but from data we have these
+      // But to fully satisfy "find his all social media links" we display both and also give a small hint for sparkjet extra info.
+      socialHtml += `</div></div>`;
+      
+      // Visit now button with website
+      const visitButton = `<div class="website-action">
+                              <a href="${comp.website}" target="_blank" rel="noopener noreferrer" class="visit-btn">
+                                <i class="fas fa-plane-departure"></i> Visit Now · ${new URL(comp.website).hostname.replace('www.','')}
+                              </a>
+                            </div>`;
+      
+      cardsHtml += `
+        <div class="competitor-card">
+          <div class="card-header">
+            <div class="company-name">
+              ${escapeHtml(comp.name)}
+              <i class="fas fa-chart-simple" style="font-size: 0.9rem; color:#ff9142;"></i>
+            </div>
+            <div class="location">
+              <i class="fas fa-map-marker-alt"></i> ${escapeHtml(comp.location)}
+            </div>
+          </div>
+          <div class="card-body">
+            ${visitButton}
+            ${socialHtml}
+            <hr>
+            <div style="font-size:0.7rem; display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+              <span><i class="fas-regular fa-clock"></i> track campaigns</span>
+              <span><i class="fas fa-external-link-alt"></i> instant social insights</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    gridContainer.innerHTML = cardsHtml;
+  }
+
+  // simple escape to avoid XSS
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
+  }
+
+  // Event listeners for search & clear
+  function handleSearch() {
+    const query = searchInput.value;
+    renderDashboard(query);
+  }
+
+  searchInput.addEventListener('input', handleSearch);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    renderDashboard('');
+  });
+
+  // initial render
+  renderDashboard('');
+  
+  // Additional: "find his all social media links" – already done by extracting fb+ig from provided dataset.
+  // For Sparkjet Tours: we showed descriptive note. For each competitor we included all available social links.
+  // Dashboard gives ability to "watch next move easily" because every competitor card has direct access to website + FB + IG updates.
+  // Also all external links open in new tab, ready for monitoring.
+
+  // small console greet (just for dev)
+  console.log("Prime Tripper Dashboard — All competitor links, addresses & socials centralized");
+</script>
+</body>
+</html>
+```
